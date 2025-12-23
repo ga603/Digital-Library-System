@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dundori Library LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar { min-height: 100vh; background-color: #2c3e50; color: white; }
+        .sidebar a { color: #bdc3c7; text-decoration: none; display: block; padding: 10px; }
+        .sidebar a:hover { background-color: #34495e; color: white; }
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block sidebar p-3">
+            <h4 class="text-center mb-4"><i class="fas fa-book-reader"></i> Dundori Lib</h4>
+
+<h4 class="text-center mb-4">
+    <a href="{% url 'index' %}" class="text-decoration-none text-white">
+        <i class="fas fa-book-reader"></i> Dundori Lib
+    </a>
+</h4>
+           <ul class="nav flex-column">
+    <li class="nav-item"><a href="{% url 'index' %}"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+    
+    <li class="nav-item">
+        <a href="{% url 'book_list' %}"><i class="fas fa-book me-2"></i> Books</a>
+    </li>
+   
+  
+
+    {% if user.is_staff or user.role == 'LIBRARIAN' or user.role == 'ADMIN' %}
+       <li class="nav-item">
+    <a href="{% url 'student_list' %}"><i class="fas fa-users me-2"></i> Students</a>
+</li>
+        <li class="nav-item"><a href="{% url 'issue_book' %}"><i class="fas fa-hand-holding me-2"></i> Issue Book</a></li>
+        <li class="nav-item"><a href="{% url 'active_loans' %}"><i class="fas fa-undo me-2"></i> Return Book</a></li>
+        <hr>
+        <li class="nav-item"><a href="{% url 'upload_books' %}"><i class="fas fa-file-import me-2"></i> Bulk Upload</a></li>
+
+      
+        <li class="nav-item"><a href="/admin"><i class="fas fa-cogs me-2"></i> Admin Panel</a></li>
+    {% endif %}
+
+    <hr>
+    <li class="nav-item px-3 mb-2 text-white-50">
+        <small>Logged in as: <strong>{{ user.username }}</strong></small>
+    </li>
+    <li class="nav-item">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-link text-start w-100" style="color: #bdc3c7;">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </button>
+        </form>
+    </li>
+</ul>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 py-4">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<footer class="text-center py-4 text-muted mt-5 border-top">
+    <div class="container">
+        <small>
+            &copy; 2026 <strong>Dundori Senior School</strong>. Digital Library System.<br>
+            Designed with <i class="fas fa-heart text-danger"></i> by the IT Dept.
+        </small>
+    </div>
+</footer>
+</body>
+</html>

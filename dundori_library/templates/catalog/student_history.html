@@ -1,0 +1,84 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4 shadow-sm border-0 border-start border-5 {% if has_overdue %}border-danger{% else %}border-success{% endif %}">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-1">{{ student.first_name }} {{ student.last_name }}</h2>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-id-badge me-1"></i> Adm: <strong>{{ student.admission_number }}</strong> &nbsp;|&nbsp; 
+                        <i class="fas fa-layer-group me-1"></i> Class: <strong>{{ student.student_class }}</strong>
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    {% if has_overdue %}
+                        <span class="badge bg-danger p-2"><i class="fas fa-exclamation-circle"></i> Has Overdue Books</span>
+                    {% else %}
+                        <span class="badge bg-success p-2"><i class="fas fa-check-circle"></i> Good Standing</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Borrowing History</h4>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Date Issued</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in history %}
+                        <tr>
+                            <td><strong>{{ record.book.title }}</strong></td>
+                            <td>{{ record.issue_date }}</td>
+                            <td>
+                                {% if record.status == 'ISSUED' and record.calculate_fine > 0 %}
+                                    <span class="text-danger fw-bold">{{ record.due_date }}</span>
+                                {% else %}
+                                    {{ record.due_date }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.return_date %}
+                                    {{ record.return_date }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.status == 'ISSUED' %}
+                                    {% if record.calculate_fine > 0 %}
+                                        <span class="badge bg-danger">Overdue: {{ record.calculate_fine }} KES</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Active Loan</span>
+                                    {% endif %}
+                                {% elif record.status == 'RETURNED' %}
+                                    <span class="badge bg-secondary">Returned</span>
+                                {% else %}
+                                    <span class="badge bg-dark">Lost</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">This student has never borrowed a book.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+    <h2 class="mb-4">Librarian Dashboard</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Titles</h5>
+                    <h2 class="display-4">{{ num_books }}</h2>
+                    <p class="card-text"><i class="fas fa-book"></i> In Library</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Currently Issued</h5>
+                    <h2 class="display-4">{{ num_issued }}</h2>
+                    <p class="card-text"><i class="fas fa-hand-holding-open"></i> Active Loans</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Overdue</h5>
+                    <h2 class="display-4">{{ num_overdue }}</h2>
+                    <p class="card-text"><i class="fas fa-exclamation-triangle"></i> Needs Action</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Available</h5>
+                    <h2 class="display-4">{{ num_instances_available }}</h2>
+                    <p class="card-text"><i class="fas fa-check-circle"></i> Ready to issue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Recent Transactions
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+    <tr>
+        <th>Student</th>
+        <th>Book</th>
+        <th>Date Issued</th>
+        <th>Status</th>
+    </tr>
+</thead>
+<tbody>
+    {% for trans in recent_transactions %}
+    <tr>
+<td>
+    <a href="{% url 'student_history' trans.student.pk %}" class="text-decoration-none text-dark">
+        <span class="fw-bold">{{ trans.student.first_name }} {{ trans.student.last_name }}</span>
+    </a>
+    <br>
+    <small class="text-muted">{{ trans.student.student_class }}</small>
+</td>
+        <td>{{ trans.book.title }}</td>
+        <td>{{ trans.issue_date }}</td>
+        <td>
+            {% if trans.status == 'ISSUED' %}
+                <span class="badge bg-warning text-dark">Issued</span>
+            {% elif trans.status == 'RETURNED' %}
+                <span class="badge bg-success">Returned</span>
+            {% else %}
+                <span class="badge bg-danger">Lost</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4" class="text-center text-muted py-3">No activity found in the system yet.</td>
+    </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

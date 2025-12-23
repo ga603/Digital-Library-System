@@ -1,0 +1,53 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-hand-holding"></i> Issue a Book</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Select Student</label>
+                            {{ form.student }}
+                            <div class="form-text">Only students are listed here.</div>
+                        </div>
+
+                        <div class="mb-3">
+                                  <label class="form-label">Select Book</label>
+    {{ form.book }}
+                   <div class="form-text">Only available books are listed.</div>
+           </div>
+
+<div class="mb-3 border-start border-4 border-warning ps-3 bg-light py-2">
+    <label class="form-label text-dark fw-bold">OR Type Book Name (If not in system)</label>
+    {{ form.manual_book_title }}
+    <div class="form-text">Use this only if the book is not in the dropdown above.</div>
+</div>
+<div class="mb-3">
+    <label class="form-label">Due Date</label>
+    {{ form.due_date }}
+</div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Confirm Issue</button>
+                            <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

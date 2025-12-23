@@ -1,0 +1,61 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="fas fa-user-graduate"></i> My Borrowed Books</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if loans %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                        <tr>
+                            <td><strong>{{ loan.book.title }}</strong></td>
+                            <td>{{ loan.issue_date }}</td>
+                            <td>
+                                {% if loan.status == 'ISSUED' %}
+                                    {% if loan.calculate_fine > 0 %}
+                                        <span class="text-danger fw-bold">{{ loan.due_date }} (Overdue!)</span>
+                                        <div class="small text-danger">Fine: {{ loan.calculate_fine }} KES</div>
+                                    {% else %}
+                                        <span class="text-success">{{ loan.due_date }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">{{ loan.return_date }} (Returned)</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if loan.status == 'ISSUED' %}
+                                    <span class="badge bg-warning text-dark">Active</span>
+                                {% elif loan.status == 'RETURNED' %}
+                                    <span class="badge bg-success">Returned</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Lost</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <p class="lead text-muted">You have no borrowing history yet.</p>
+                    <a href="{% url 'book_list' %}" class="btn btn-primary">Browse Catalog</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

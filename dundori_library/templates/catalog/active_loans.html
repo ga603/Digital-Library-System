@@ -1,0 +1,64 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Active Loans (Books Out)</h2>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student</th>
+                        <th>Book Title</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Fine Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td>
+                            <strong>{{ loan.student.username }}</strong><br>
+                            <small class="text-muted">{{ loan.student.admission_number }}</small>
+                        </td>
+                        <td>{{ loan.book.title }}</td>
+                        <td>{{ loan.issue_date }}</td>
+                        <td>
+                            {% if loan.calculate_fine > 0 %}
+                                <span class="text-danger fw-bold">{{ loan.due_date }} (Overdue)</span>
+                            {% else %}
+                                <span class="text-success">{{ loan.due_date }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loan.calculate_fine > 0 %}
+                                <span class="badge bg-danger">{{ loan.calculate_fine }} KES</span>
+                            {% else %}
+                                <span class="badge bg-secondary">None</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'return_book_action' loan.pk %}" 
+                               class="btn btn-sm btn-outline-success"
+                               onclick="return confirm('Are you sure you want to return this book?');">
+                                <i class="fas fa-undo"></i> Return
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fas fa-check-circle fa-2x mb-3"></i><br>
+                            No active loans. All books are in the library.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore database (we don't want to share local data)
+db.sqlite3
+
+# Ignore compiled python files
+__pycache__/
+*.pyc
+
+# Ignore media uploads (optional, usually good to ignore large files)
+media/
